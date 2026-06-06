@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     if (from) filter.date.$gte = new Date(from);
     if (to) filter.date.$lte = new Date(to);
     if (kind) filter.kind = kind;
-    if (q) filter.$or = [ { note: new RegExp(q, 'i') }, { category: new RegExp(q, 'i') } ];
+    if (q) filter.$or = [ { note: new RegExp(q, 'i') } ];
     const entries = await Entry.find(filter).sort({ date: -1 }).limit(1000).lean();
     return res.status(200).json({ data: entries });
   }

@@ -1,24 +1,21 @@
 export default function EntryList({ entries = [] }) {
   return (
-    <div style={{ background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', borderRadius: 8, padding: 12 }}>
+    <div className="card">
       <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Entries</h3>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ textAlign: 'left', fontSize: 13, color: '#6b7280' }}><th>Date</th><th>Kind</th><th>Category</th><th>Note</th><th style={{ textAlign: 'right' }}>Amount</th></tr>
-          </thead>
-          <tbody>
-            {entries.map(e => (
-              <tr key={e._id} style={{ borderTop: '1px solid #e5e7eb' }}>
-                <td style={{ padding: '8px 0' }}>{new Date(e.date).toLocaleDateString()}</td>
-                <td>{e.kind}</td>
-                <td>{e.category}</td>
-                <td>{e.note}</td>
-                <td style={{ textAlign: 'right' }}>{e.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {entries.map(e => (
+          <div key={e._id || Math.random()} className="entry-card" style={{ background: '#f9fafb' }}>
+            <div className="entry-left">
+              <div style={{ fontWeight: 700 }}>{e.kind}</div>
+              <div className="small" style={{ color: '#6b7280' }}>{e.note || ''}</div>
+              <div className="small" style={{ color: '#6b7280' }}>{new Date(e.date).toLocaleDateString()}</div>
+            </div>
+            <div className="entry-right">
+              <div style={{ fontWeight: 700 }}>{e.kind}</div>
+              <div style={{ fontSize: 16, fontWeight: 700 }}>{e.amount}</div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

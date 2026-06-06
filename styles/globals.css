@@ -1,5 +1,42 @@
 
 html,body,#__next { height: 100%; }
-body { background:#f7fafc; color:#111827; font-family: Inter, system-ui, Arial, sans-serif; margin:0 }
+body { background:#f7fafc; color:#111827; font-family: Inter, system-ui, Arial, sans-serif; margin:0; overflow-y:auto; }
 input,select,button { margin:6px; padding:8px; border:1px solid #e5e7eb; border-radius:6px }
 table th, table td { padding:8px; border-bottom:1px solid #e5e7eb }
+
+/* Layout helpers */
+.container { max-width: 1024px; margin: 0 auto; padding: 16px; }
+.app-main-grid { display: grid; grid-template-columns: 1fr 360px; gap: 16px; align-items: start; }
+.cards-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+
+@media (max-width: 900px) {
+	.app-main-grid { grid-template-columns: 1fr; }
+	.container { padding: 12px; }
+}
+
+@media (max-width: 480px) {
+	input,select,button { margin:4px; padding:6px }
+}
+
+/* Mobile-first card and button styles */
+.card { background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); margin-bottom: 12px }
+.btn { display: inline-block; background: #2563eb; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer }
+.btn.secondary { background: #f3f4f6; color: #111827 }
+.small { font-size: 13px }
+.entry-card { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 10px; border-radius: 8px }
+.entry-left { display:flex; flex-direction: column; gap:4px }
+.entry-right { text-align: right }
+
+@media (max-width: 640px) {
+	.cards-row { flex-direction: column }
+	.entry-card { flex-direction: column; align-items: flex-start }
+	.entry-right { width: 100%; text-align: left }
+}
+
+/* Responsive grid that allows 1 or 2+ columns depending on available width
+	 Useful for summary cards on mobile where some info can be two-column */
+.responsive-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px }
+
+@media (max-width: 420px) {
+	.responsive-grid { grid-template-columns: repeat(2, 1fr); }
+}

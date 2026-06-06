@@ -8,7 +8,6 @@ const RecurringSchema = new mongoose.Schema({
 const EntrySchema = new mongoose.Schema({
   kind: { type: String, enum: ['income','expense','charity','saving'], required: true },
   date: { type: Date, required: true },
-  category: { type: String, default: 'General' },
   note: { type: String, default: '' },
   amount: { type: Number, required: true },
   recurring: { type: RecurringSchema, default: null },
