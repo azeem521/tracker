@@ -5,10 +5,15 @@ export default function ReminderModal({ open, setOpen }) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ kind: 'expense', amount: '', note: '' });
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     tryOpen();
+    function onResize() { setIsMobile(window.innerWidth <= 480); }
+    onResize();
+    window.addEventListener('resize', onResize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   function tryOpen() {
@@ -63,9 +68,11 @@ export default function ReminderModal({ open, setOpen }) {
 
   if (!show) return null;
 
+  const sheetStyle = isMobile ? { width: '100%', borderRadius: '12px 12px 0 0', padding: 16 } : { width: 'min(420px, calc(100% - 32px))', borderRadius: 8, padding: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.2)' };
+
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60 }}>
-      <div style={{ width: 'min(420px, calc(100% - 32px))', background: '#fff', borderRadius: 8, padding: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 60 }}>
+      <div style={{ background: '#fff', ...sheetStyle }}>
         <h3 style={{ margin: 0, marginBottom: 8 }}>Quick reminder — Add today's entry</h3>
         <p style={{ marginTop: 0, marginBottom: 12, color: '#6b7280' }}>It's good to record income or expenses before sleeping.</p>
         <form onSubmit={submit}>
@@ -88,10 +95,10 @@ export default function ReminderModal({ open, setOpen }) {
               <label style={{ display: 'block', fontSize: 12, color: '#6b7280' }}>Note</label>
               <input value={form.note} onChange={e=>setForm({...form, note: e.target.value})} placeholder="Note (optional)" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #e5e7eb' }} />
             </div>
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 8 }}>
-              <button type="button" onClick={()=>snooze(2)} style={{ background: '#f3f4f6', border: 'none', padding: '8px 12px', borderRadius: 6 }}>Snooze 2h</button>
-              <button type="button" onClick={disableForever} style={{ background: '#fef2f2', border: 'none', padding: '8px 12px', borderRadius: 6, color: '#b91c1c' }}>Don't show</button>
-              <button type="submit" disabled={loading} style={{ background: '#16a34a', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: 6 }}>Add</button>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 8, flexWrap: 'wrap' }}>
+              <button type="button" onClick={()=>snooze(2)} style={{ background: '#f3f4f6', border: 'none', padding: isMobile ? '12px 16px' : '8px 12px', borderRadius: 8 }}>Snooze 2h</button>
+              <button type="button" onClick={disableForever} style={{ background: '#fef2f2', border: 'none', padding: isMobile ? '12px 16px' : '8px 12px', borderRadius: 8, color: '#b91c1c' }}>Don't show</button>
+              <button type="submit" disabled={loading} style={{ background: '#16a34a', color: '#fff', border: 'none', padding: isMobile ? '12px 16px' : '8px 12px', borderRadius: 8 }}>Add</button>
             </div>
           </div>
         </form>

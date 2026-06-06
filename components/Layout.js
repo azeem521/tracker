@@ -9,6 +9,8 @@ export default function Layout({ children }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     // Check server-side cookie for admin auth
@@ -16,9 +18,15 @@ export default function Layout({ children }) {
       .then(r => r.json())
       .then(data => {
         if (!data.ok) setAuthOpen(true);
+        else setIsAuthed(true);
       })
       .catch(() => setAuthOpen(true))
       .finally(() => setChecking(false));
+
+    function onResize() { setIsMobile(window.innerWidth <= 480); }
+    onResize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   async function submitPassword(e) {
@@ -31,6 +39,7 @@ export default function Layout({ children }) {
         const body = await res.json();
         if (body.ok) {
           setAuthOpen(false);
+          setIsAuthed(true);
           setLoading(false);
           return;
         }
@@ -43,6 +52,16 @@ export default function Layout({ children }) {
     }
   }
 
+  async function logout() {
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' });
+    } catch (e) {
+      // ignore
+    }
+    setIsAuthed(false);
+    setAuthOpen(true);
+  }
+
   if (checking) {
     return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Checking...</div>;
   }
@@ -53,7 +72,11 @@ export default function Layout({ children }) {
         <div style={{ maxWidth: 1024, margin: '0 auto', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ fontSize: 20, fontWeight: 600 }}>Expense Tracker</div>
           <nav>
-            <a style={{ fontSize: 13, color: '#4b5563', textDecoration: 'none' }}>Dashboard</a>
+            {isAuthed ? (
+              <button onClick={logout} style={{ fontSize: 13, color: '#374151', background: 'transparent', border: 'none', cursor: 'pointer' }}>Logout</button>
+            ) : (
+              <a style={{ fontSize: 13, color: '#4b5563', textDecoration: 'none' }}>Dashboard</a>
+            )}
           </nav>
         </div>
       </header>
@@ -61,8 +84,8 @@ export default function Layout({ children }) {
       <ReminderModal open={modalOpen} setOpen={setModalOpen} />
 
       {authOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <form onSubmit={submitPassword} style={{ background: '#fff', padding: 24, borderRadius: 10, width: 'min(520px, 92%)', boxShadow: '0 12px 48px rgba(2,6,23,0.2)' }} aria-labelledby="unlock-title">
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <form onSubmit={submitPassword} style={{ background: '#fff', padding: 20, borderRadius: isMobile ? '12px 12px 0 0' : 10, width: isMobile ? '100%' : 'min(520px, 92%)', boxShadow: isMobile ? 'none' : '0 12px 48px rgba(2,6,23,0.2)' }} aria-labelledby="unlock-title">
             <div id="unlock-title" style={{ fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Unlock Expense Tracker</div>
             <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 12 }}>Enter your password to continue. This device will remain unlocked until the cookie expires.</div>
 
@@ -75,7 +98,7 @@ export default function Layout({ children }) {
             {error && <div role="alert" style={{ color: 'red', marginTop: 6 }}>{error}</div>}
 
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
-              <button type="submit" className="btn" disabled={loading} style={{ opacity: loading ? 0.7 : 1 }}>{loading ? 'Unlocking...' : 'Unlock'}</button>
+              <button type="submit" className="btn" disabled={loading} style={{ opacity: loading ? 0.7 : 1, padding: isMobile ? '12px 16px' : undefined }}>{loading ? 'Unlocking...' : 'Unlock'}</button>
             </div>
           </form>
         </div>

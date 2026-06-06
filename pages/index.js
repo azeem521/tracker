@@ -72,7 +72,7 @@ export default function Home() {
         <div>
           <EntryForm onSaved={load} />
           <h3>Recent entries</h3>
-          <EntryList entries={(entries||[]).slice(0,10)} />
+          <EntryList entries={(entries||[]).slice(0,10)} onChange={load} />
         </div>
         <div>
           <div style={{ background: '#fff', padding: 12, borderRadius: 8, marginBottom: 12 }}>
