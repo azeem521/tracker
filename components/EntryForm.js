@@ -9,6 +9,7 @@ export default function EntryForm({ onSaved }) {
     await axios.post('/api/entries', { ...form, amount: Number(form.amount), date: new Date(form.date) });
     setForm({ kind: 'expense', date: new Date().toISOString().slice(0,10), note: '', amount: '' });
     onSaved && onSaved();
+    try { const { showToast } = await import('./ToastContainer'); showToast('success', 'Entry added'); } catch(e){ /* ignore */ }
   }
 
   return (

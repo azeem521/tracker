@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import ReminderModal from './ReminderModal';
+import ToastContainer from './ToastContainer';
 
 export default function Layout({ children }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -82,6 +83,7 @@ export default function Layout({ children }) {
       </header>
       <main style={{ maxWidth: 1024, margin: '0 auto', padding: 16 }}>{children}</main>
       <ReminderModal open={modalOpen} setOpen={setModalOpen} />
+      <ToastContainer />
 
       {authOpen && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 1000 }}>

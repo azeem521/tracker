@@ -11,6 +11,7 @@ export default function EntryList({ entries = [], onChange }) {
     try {
       await axios.delete(`/api/entries/${id}`);
       onChange && onChange();
+      try { const { showToast } = await import('./ToastContainer'); showToast('success', 'Entry deleted'); } catch(e){}
     } catch (e) {
       alert('Delete failed');
     } finally { setBusyId(null); }
@@ -55,6 +56,7 @@ function EditModal({ entry, onClose, onSaved }) {
     try {
       await axios.put(`/api/entries/${entry._id}`, { ...form, amount: Number(form.amount), date: form.date });
       onSaved && onSaved();
+      try { const { showToast } = await import('./ToastContainer'); showToast('success', 'Entry updated'); } catch(e){}
     } catch (err) {
       alert('Update failed');
     } finally { setLoading(false); }

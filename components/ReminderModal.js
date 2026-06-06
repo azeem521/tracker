@@ -44,7 +44,8 @@ export default function ReminderModal({ open, setOpen }) {
       }
       setShow(false);
       setOpen && setOpen(false);
-      window.location.reload();
+      try { const { showToast } = await import('./ToastContainer'); showToast('success', 'Entry saved'); } catch(e){}
+      window.setTimeout(()=>window.location.reload(), 300);
     } catch (err) {
       console.error(err);
       alert('Failed to save entry');
